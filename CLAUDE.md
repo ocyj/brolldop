@@ -46,9 +46,9 @@ The password gate uses [brollobfuscate](https://github.com/ocyj/brollobfuscate) 
 
 The RSVP form submits group/family RSVPs to a Google Sheet via a Google Apps Script web app.
 
-- **Form flow:** Guests enter email, choose attending yes/no. If yes: add guests dynamically (name + diet), set extra kids count, message, and Peppade. If no: provide name.
+- **Form flow:** Guests enter email. One guest box is shown by default; more can be added. Each guest has name, attending yes/no, and (if attending) diet. Extra kids, message, and Peppade appear when at least one guest is attending.
 - **Endpoint protection:** The Apps Script URL is stored in `data/source.json` under `rsvpEndpoint` and encrypted via brollobfuscate. A hidden `<span id="rsvp-endpoint" data-brob="rsvpEndpoint">` is populated after decryption.
-- **Sheet structure (sheet name: "RSVP"):** Columns: Tidsstampel | E-post | Kommer | Extraungar dopfika | Meddelande | Peppade | Gästnamn | Kost | Kostdetalj. Each submission produces one submission-level row followed by one row per guest.
+- **Sheet structure (sheet name: "RSVP"):** Columns: Tidsstampel | E-post | Extraungar dopfika | Meddelande | Peppade | Gästnamn | Kommer | Kost | Kostdetalj. Each submission produces one submission-level row followed by one row per guest (with per-guest Kommer ja/nej).
 - **Google Apps Script:** `Code.gs` in the repo root is the source for the Apps Script. Deploy as web app (Execute as: Me, Access: Anyone). The client POSTs JSON with `Content-Type: text/plain` to avoid CORS preflight.
 - **Dev/test:** The form always POSTs to whatever URL is in `rsvpEndpoint`. For local testing, point `source.json` at a test Apps Script deployment. Delete the test deployment before going live.
 - **After changing `source.json`:** Re-run the brollobfuscate CLI, update the Gist, and save the new envelope to `url-envelope.json`.

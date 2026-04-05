@@ -209,7 +209,7 @@
             <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">OSA</p>
             <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">du kommer väl?</h3>
             <p class="mt-6 text-sm leading-8 text-text/85 sm:text-base">
-              Anmäl ditt sällskap nedan. Tryck <strong>+</strong> för att lägga till fler gäster.
+              Anmäl dig eller ditt sällskap nedan. Tryck <strong>+</strong> för att lägga till fler gäster.
             </p>
           </div>
 
@@ -219,43 +219,23 @@
 
             <!-- E-post -->
             <div>
-              <label class="block text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70" for="rsvp-email">E-post</label>
+              <label class="block text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70" for="rsvp-email">Din e-postadress</label>
               <input id="rsvp-email" type="email" required placeholder="din@epost.se"
                 class="mt-2 w-full border border-line bg-paper px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />
             </div>
 
-            <!-- Attending radio -->
-            <fieldset>
-              <legend class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Kommer du/ni?</legend>
-              <div class="mt-2 flex gap-6">
-                <label class="flex items-center gap-2 text-sm text-text">
-                  <input type="radio" name="attending" value="yes" required class="accent-rouge" /> Ja
-                </label>
-                <label class="flex items-center gap-2 text-sm text-text">
-                  <input type="radio" name="attending" value="no" required class="accent-rouge" /> Nej
-                </label>
-              </div>
-            </fieldset>
-
-            <!-- Decline section (shown only if No) -->
-            <div id="rsvp-decline-section" hidden>
-              <label class="block text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70" for="rsvp-decline-name">Ditt namn</label>
-              <input id="rsvp-decline-name" type="text" placeholder="Namn"
-                class="mt-2 w-full border border-line bg-paper px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />
+            <!-- Guest list -->
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Gäster</p>
+              <div id="rsvp-guests" class="mt-3 space-y-4"></div>
+              <button type="button" id="rsvp-add-guest"
+                class="mt-3 border border-line bg-paper px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-rouge transition hover:border-rouge">
+                + Lägg till gäst
+              </button>
             </div>
 
-            <!-- YES section -->
-            <div id="rsvp-yes-section" hidden class="space-y-6">
-
-              <!-- Guest list -->
-              <div>
-                <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Gäster</p>
-                <div id="rsvp-guests" class="mt-3 space-y-4"></div>
-                <button type="button" id="rsvp-add-guest"
-                  class="mt-3 border border-line bg-paper px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-rouge transition hover:border-rouge">
-                  + Lägg till gäst
-                </button>
-              </div>
+            <!-- Extra fields (shown when at least one guest is attending) -->
+            <div id="rsvp-extras" hidden class="space-y-6">
 
               <!-- Extra kids stepper -->
               <div>
@@ -343,17 +323,10 @@
         var guestIndex = 0;
         var extraKids = 0;
 
-        // Toggle yes/no sections
-        document.querySelectorAll('input[name="attending"]').forEach(function (radio) {
-          radio.addEventListener('change', function () {
-            var yes = this.value === 'yes';
-            document.getElementById('rsvp-yes-section').hidden = !yes;
-            document.getElementById('rsvp-decline-section').hidden = yes;
-            if (yes && document.querySelectorAll('.rsvp-guest').length === 0) {
-              addGuest();
-            }
-          });
-        });
+        function updateExtrasVisibility() {
+          var anyAttending = !!document.querySelector('.guest-attending-yes:checked');
+          document.getElementById('rsvp-extras').hidden = !anyAttending;
+        }
 
         // Add guest block
         function addGuest() {
@@ -366,26 +339,48 @@
             '<button type="button" class="rsvp-remove-guest absolute right-3 top-2 text-lg text-text/50 transition hover:text-rouge">&times;</button>' +
             '<input type="text" placeholder="Namn" required class="guest-name w-full border border-line bg-white px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />' +
             '<fieldset>' +
+            '<legend class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Gäst kommer</legend>' +
+            '<div class="mt-1 flex gap-4">' +
+            '<label class="flex items-center gap-2 text-sm text-text"><input type="radio" name="attending-' + n + '" value="yes" class="guest-attending-yes accent-rouge" /> Ja</label>' +
+            '<label class="flex items-center gap-2 text-sm text-text"><input type="radio" name="attending-' + n + '" value="no" class="guest-attending-no accent-rouge" /> Nej</label>' +
+            '</div>' +
+            '</fieldset>' +
+            '<div class="guest-diet-section" hidden>' +
+            '<fieldset>' +
             '<legend class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Kost</legend>' +
             '<div class="mt-1 flex gap-4">' +
             '<label class="flex items-center gap-2 text-sm text-text"><input type="radio" name="diet-' + n + '" value="Allt" checked class="accent-rouge" /> Allt</label>' +
             '<label class="flex items-center gap-2 text-sm text-text"><input type="radio" name="diet-' + n + '" value="Annat" class="accent-rouge" /> Annat</label>' +
             '</div>' +
             '</fieldset>' +
-            '<input type="text" placeholder="Beskriv…" hidden class="guest-diet-detail w-full border border-line bg-white px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />';
+            '<input type="text" placeholder="Beskriv…" hidden class="guest-diet-detail mt-3 w-full border border-line bg-white px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />' +
+            '</div>';
 
           container.appendChild(div);
 
           div.querySelector('.rsvp-remove-guest').addEventListener('click', function () {
             div.remove();
+            updateExtrasVisibility();
           });
 
-          div.querySelectorAll('input[type="radio"]').forEach(function (r) {
+          // Toggle diet section based on attending
+          div.querySelectorAll('input[name="attending-' + n + '"]').forEach(function (r) {
+            r.addEventListener('change', function () {
+              div.querySelector('.guest-diet-section').hidden = this.value !== 'yes';
+              updateExtrasVisibility();
+            });
+          });
+
+          // Toggle diet detail based on diet choice
+          div.querySelectorAll('input[name="diet-' + n + '"]').forEach(function (r) {
             r.addEventListener('change', function () {
               div.querySelector('.guest-diet-detail').hidden = this.value !== 'Annat';
             });
           });
         }
+
+        // Add first guest on load
+        addGuest();
 
         document.getElementById('rsvp-add-guest').addEventListener('click', addGuest);
 
@@ -410,35 +405,40 @@
 
           var endpoint = document.getElementById('rsvp-endpoint').textContent.trim();
           var email = document.getElementById('rsvp-email').value.trim();
-          var attendingRadio = document.querySelector('input[name="attending"]:checked');
 
           if (!email) { errorEl.textContent = 'Ange din e-post.'; return; }
-          if (!attendingRadio) { errorEl.textContent = 'Ange om du/ni kommer.'; return; }
 
-          var attending = attendingRadio.value === 'yes';
-          var payload = { email: email, attending: attending };
+          var guests = [];
+          var missingAttending = false;
+          document.querySelectorAll('.rsvp-guest').forEach(function (g) {
+            var attendingRadio = g.querySelector('input[class*="guest-attending-"]:checked') ||
+              g.querySelector('.guest-attending-yes:checked') || g.querySelector('.guest-attending-no:checked');
+            if (!attendingRadio) { missingAttending = true; return; }
+            var attending = attendingRadio.value === 'yes';
+            var guest = {
+              name: g.querySelector('.guest-name').value.trim(),
+              attending: attending
+            };
+            if (attending) {
+              var dietRadio = g.querySelector('input[name^="diet-"]:checked');
+              guest.diet = dietRadio ? dietRadio.value : 'Allt';
+              guest.dietDetail = g.querySelector('.guest-diet-detail').value.trim();
+            }
+            guests.push(guest);
+          });
 
-          if (attending) {
-            var guests = [];
-            document.querySelectorAll('.rsvp-guest').forEach(function (g) {
-              var dietRadio = g.querySelector('input[type="radio"]:checked');
-              guests.push({
-                name: g.querySelector('.guest-name').value.trim(),
-                diet: dietRadio ? dietRadio.value : 'Allt',
-                dietDetail: g.querySelector('.guest-diet-detail').value.trim()
-              });
-            });
-            if (guests.length === 0) { errorEl.textContent = 'Lägg till minst en gäst.'; return; }
-            if (guests.some(function (g) { return !g.name; })) { errorEl.textContent = 'Varje gäst behöver ett namn.'; return; }
-            payload.guests = guests;
+          if (guests.length === 0) { errorEl.textContent = 'Lägg till minst en gäst.'; return; }
+          if (missingAttending) { errorEl.textContent = 'Ange om varje gäst kommer.'; return; }
+          if (guests.some(function (g) { return !g.name; })) { errorEl.textContent = 'Varje gäst behöver ett namn.'; return; }
+
+          var anyAttending = guests.some(function (g) { return g.attending; });
+          var payload = { email: email, guests: guests };
+
+          if (anyAttending) {
             payload.extraKids = extraKids;
             payload.message = document.getElementById('rsvp-message').value.trim();
             var peppadeRadio = document.querySelector('input[name="peppade"]:checked');
             payload.peppade = peppadeRadio ? peppadeRadio.value === 'yes' : null;
-          } else {
-            var declineName = document.getElementById('rsvp-decline-name').value.trim();
-            if (!declineName) { errorEl.textContent = 'Ange ditt namn.'; return; }
-            payload.declineName = declineName;
           }
 
           if (!endpoint) { errorEl.textContent = 'Endpoint saknas.'; return; }
@@ -455,7 +455,7 @@
             .then(function (res) {
               if (!res.ok) throw new Error('HTTP ' + res.status);
               document.getElementById('rsvp-form').hidden = true;
-              document.getElementById(attending ? 'rsvp-success-yes' : 'rsvp-success-no').hidden = false;
+              document.getElementById(anyAttending ? 'rsvp-success-yes' : 'rsvp-success-no').hidden = false;
             })
             .catch(function () {
               errorEl.textContent = 'Något gick fel. Försök igen.';
