@@ -39,7 +39,7 @@ The password gate uses [brollobfuscate](https://github.com/ocyj/brollobfuscate) 
 
 - `data/source.json` contains the plaintext sensitive data. It is **gitignored and must never be committed**.
 - Elements with `data-brob="key"` attributes are populated from the decrypted data after the guest enters the password.
-- The `<script id="url-envelope">` tag in `index.html` contains the encrypted pointer to the data endpoint. Replace its contents after running the brollobfuscate CLI.
+- The encrypted envelope is stored in `url-envelope.json` in the repo root and loaded automatically at runtime. Save the brollobfuscate CLI output there.
 - On `localhost`, a dev bypass script skips encryption and loads `data/source.json` directly. Run `npx serve .` to develop locally.
 
 ## RSVP via Google Sheets
@@ -51,7 +51,7 @@ The RSVP form submits group/family RSVPs to a Google Sheet via a Google Apps Scr
 - **Sheet structure (sheet name: "RSVP"):** Columns: Tidsstampel | E-post | Kommer | Extraungar dopfika | Meddelande | Peppade | Gästnamn | Kost | Kostdetalj. Each submission produces one submission-level row followed by one row per guest.
 - **Google Apps Script:** `Code.gs` in the repo root is the source for the Apps Script. Deploy as web app (Execute as: Me, Access: Anyone). The client POSTs JSON with `Content-Type: text/plain` to avoid CORS preflight.
 - **Dev/test:** The form always POSTs to whatever URL is in `rsvpEndpoint`. For local testing, point `source.json` at a test Apps Script deployment. Delete the test deployment before going live.
-- **After changing `source.json`:** Re-run the brollobfuscate CLI, update the Gist, and replace `<script id="url-envelope">` contents in `index.html`.
+- **After changing `source.json`:** Re-run the brollobfuscate CLI, update the Gist, and save the new envelope to `url-envelope.json`.
 
 ## Definition of done
 

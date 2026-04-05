@@ -1,1 +1,2 @@
-data/source.json
+.claude/settings.local.json
+data/*
