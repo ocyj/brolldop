@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-brob="pageTitle">Brölldop</title>
+    <meta
+      name="description"
+      content="En minimalistisk bröllopswebbplats med lösenordsskydd, schema, resa och OSA."
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              blush: "#f6e7e0",
+              paper: "#fbf4ef",
+              rouge: "#c53a36",
+              wine: "#8e2b2d",
+              text: "#7e3837",
+              line: "rgba(126, 56, 55, 0.18)"
+            },
+            fontFamily: {
+              body: ['Raleway', 'Noto Sans', 'sans-serif'],
+              accent: ['"Modern Love W05 Regular Slanted"', 'cursive']
+            },
+            letterSpacing: {
+              widestish: '0.38em'
+            },
+            boxShadow: {
+              soft: '0 24px 60px rgba(142, 43, 45, 0.08)'
+            }
+          }
+        }
+      };
+    </script>
+    <style>
+      .font-accent {
+        font-style: normal;
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://db.onlinewebfonts.com/c/cc0814997a1969bd4427876e61a1acfb?family=Modern+Love+W05+Regular+Slanted" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Raleway:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script id="url-envelope" type="application/json">
+      { "salt": "PLACEHOLDER", "iv": "PLACEHOLDER", "ciphertext": "PLACEHOLDER" }
+    </script>
+    <script id="brob-messages" type="application/json">
+    {
+      "deriving": "Härleder nyckel\u2026",
+      "fetching": "Hämtar data\u2026",
+      "decrypting": "Dekrypterar\u2026",
+      "wrongPassword": "Fel lösenord. Försök igen.",
+      "fetchError": "Kunde inte hämta data: ",
+      "decryptError": "Dekryptering misslyckades."
+    }
+    </script>
+  </head>
+  <body class="min-h-screen bg-blush font-body text-text antialiased">
+    <div
+      id="brob-locked"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-blush/95 px-5 py-8"
+    >
+      <div class="w-full max-w-md border border-line bg-paper px-7 py-9 text-center shadow-soft sm:px-10">
+        <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Bröllopshelg</p>
+        <h1 class="mt-5 font-accent text-6xl leading-none text-rouge sm:text-7xl">välkommen</h1>
+        <p class="mx-auto mt-5 max-w-sm text-sm leading-7 text-text/80 sm:text-base">
+          Ange lösenordet för att se schema, resa, OSA och övriga detaljer.
+        </p>
+
+        <form id="brob-form" class="mt-8 space-y-4 text-left">
+          <label
+            for="brob-password"
+            class="block text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70"
+            >Lösenord</label
+          >
+          <input
+            id="brob-password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Ange lösenord"
+            required
+            class="w-full border border-line bg-white px-4 py-3 text-base text-text outline-none transition focus:border-rouge"
+          />
+          <button
+            id="brob-submit"
+            type="submit"
+            class="w-full border border-rouge bg-rouge px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.32em] text-paper transition hover:bg-wine"
+          >
+            Gå in
+          </button>
+          <p id="brob-status" class="text-sm text-text/70"></p>
+          <p id="brob-error" class="text-sm text-rouge"></p>
+        </form>
+
+        <p class="mt-6 text-xs leading-6 text-text/60">
+          Informationen är avsedd för inbjudna gäster.
+        </p>
+      </div>
+    </div>
+
+    <main id="brob-unlocked" hidden>
+      <div class="mx-auto max-w-5xl px-5 pb-16 pt-8 sm:px-8 sm:pb-24 sm:pt-12">
+        <header class="border-b border-line pb-5 sm:pb-7">
+          <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-widestish text-rouge" data-brob="weddingDate"></p>
+              <h2 class="mt-4 text-2xl font-semibold uppercase tracking-[0.35em] text-rouge sm:text-3xl" data-brob="coupleNames">
+              </h2>
+            </div>
+            <nav class="flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-text/80 sm:justify-end">
+              <a href="#schedule" class="transition hover:text-rouge">Program</a>
+              <a href="#travel" class="transition hover:text-rouge">Resa</a>
+              <a href="#rsvp" class="transition hover:text-rouge">OSA</a>
+              <a href="#faq" class="transition hover:text-rouge">FAQ</a>
+            </nav>
+          </div>
+        </header>
+
+        <section class="py-14 text-center sm:py-20">
+          <p class="text-sm font-semibold uppercase tracking-widestish text-rouge sm:text-base">Välkommen</p>
+          <p class="mt-5 text-base uppercase tracking-[0.32em] text-text sm:text-2xl" data-brob="weddingDate"></p>
+          <div class="mx-auto mt-12 max-w-3xl">
+            <p class="font-accent text-[4rem] leading-[0.92] text-rouge sm:text-[6rem]">dop,</p>
+            <p class="font-accent text-[4rem] leading-[0.92] text-rouge sm:text-[6rem]">bröllop</p>
+            <p class="-mt-2 font-accent text-[3.85rem] leading-[0.95] text-rouge sm:-mt-4 sm:text-[5.6rem]">och fest</p>
+          </div>
+          <p class="mt-16 text-lg uppercase tracking-[0.32em] text-text sm:text-2xl" data-brob="city"></p>
+        </section>
+
+        <section class="grid gap-10 border-t border-line py-10 sm:grid-cols-2 sm:py-14">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Om helgen</p>
+            <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">ni är inbjudna</h3>
+            <p class="mt-6 max-w-md text-base leading-8 text-text/85">
+              Vi vill samla våra favoritmänniskor för en varm, enkel och festlig helg. Här samlar vi tider,
+              praktisk information och OSA på ett ställe.
+            </p>
+          </div>
+          <div class="grid gap-6 text-sm leading-7 text-text/85 sm:pt-10">
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-rouge">Plats</p>
+              <p class="mt-2 text-base" data-brob="cityArea"></p>
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-rouge">Vigsel</p>
+              <p class="mt-2 text-base" data-brob="ceremonyBrief"></p>
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-rouge">OSA senast</p>
+              <p class="mt-2 text-base" data-brob="rsvpDeadline"></p>
+            </div>
+          </div>
+        </section>
+
+        <section id="schedule" class="border-t border-line py-10 sm:py-14">
+          <div class="max-w-2xl">
+            <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Program</p>
+            <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">dagen i korthet</h3>
+          </div>
+          <div class="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-3 sm:gap-y-10 sm:[grid-template-rows:auto_auto_auto_auto]">
+            <article class="border-l-2 border-rouge pl-5 sm:row-span-4 sm:grid sm:[grid-template-rows:subgrid] sm:[row-gap:0]">
+              <p class="text-xs font-semibold uppercase tracking-[0.28em] text-rouge" data-brob="ceremonyTime"></p>
+              <h4 class="mt-3 text-lg font-semibold uppercase tracking-[0.2em] text-text sm:mt-0">Dop- och vigselgudstjänst</h4>
+              <p class="mt-3 text-sm uppercase tracking-[0.22em] text-text/70 sm:mt-0 sm:pt-5" data-brob="ceremonyVenue"></p>
+              <p class="mt-4 text-sm leading-7 text-text/85 sm:mt-0" data-brob="ceremonyAddress"></p>
+            </article>
+            <article class="border-l-2 border-rouge pl-5 sm:row-span-4 sm:grid sm:[grid-template-rows:subgrid] sm:[row-gap:0]">
+              <p class="text-xs font-semibold uppercase tracking-[0.28em] text-rouge" data-brob="fikaTime"></p>
+              <h4 class="mt-3 text-lg font-semibold uppercase tracking-[0.2em] text-text sm:mt-0 sm:self-center">Dopfika</h4>
+              <p class="mt-3 text-sm uppercase tracking-[0.22em] text-text/70 sm:mt-0 sm:pt-5" data-brob="fikaVenue"></p>
+              <p class="mt-4 text-sm leading-7 text-text/85 sm:mt-0" data-brob="fikaDetail"></p>
+            </article>
+            <article class="border-l-2 border-rouge pl-5 sm:row-span-4 sm:grid sm:[grid-template-rows:subgrid] sm:[row-gap:0]">
+              <p class="text-xs font-semibold uppercase tracking-[0.28em] text-rouge" data-brob="partyTime"></p>
+              <h4 class="mt-3 text-lg font-semibold uppercase tracking-[0.2em] text-text sm:mt-0 sm:self-center">Mingel, mat och fest</h4>
+              <p class="mt-3 text-sm uppercase tracking-[0.22em] text-text/70 sm:mt-0 sm:pt-5" data-brob="partyVenue"></p>
+              <p class="mt-4 text-sm leading-7 text-text/85 sm:mt-0" data-brob="partyAddress"></p>
+            </article>
+          </div>
+        </section>
+
+        <section id="travel" class="grid gap-10 border-t border-line py-10 sm:grid-cols-[1.1fr_0.9fr] sm:py-14">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Resa & boende</p>
+            <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">det praktiska</h3>
+            <div class="mt-8 space-y-5 text-sm leading-8 text-text/85 sm:text-base">
+              <p><span class="font-semibold text-text">Boende:</span> Vi delar hotellförslag och rekommendationer här så snart allt är bokat.</p>
+              <p><span class="font-semibold text-text">Transport:</span> Här kommer information om parkering, kollektivtrafik och eventuell gemensam transport.</p>
+              <p><span class="font-semibold text-text">Adress:</span> Exakt adress och tider ligger bakom lösenordet och uppdateras löpande.</p>
+            </div>
+          </div>
+          <div class="border border-line bg-paper p-6 sm:p-8">
+            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-rouge">Kort info</p>
+            <div class="mt-5 space-y-5 text-sm leading-7 text-text/85">
+              <p><span class="font-semibold text-text">Närmaste stad:</span> <span data-brob="city"></span></p>
+              <p><span class="font-semibold text-text">Klädsel:</span> Festfin</p>
+              <p><span class="font-semibold text-text">Mer info:</span> Läggs upp här när detaljerna är spikade</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="rsvp" class="border-t border-line py-10 sm:py-14">
+          <div class="max-w-2xl">
+            <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">OSA</p>
+            <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">du kommer väl?</h3>
+            <p class="mt-6 text-sm leading-8 text-text/85 sm:text-base">
+              Anmäl ditt sällskap nedan. Tryck <strong>+</strong> för att lägga till fler gäster.
+            </p>
+          </div>
+
+          <span id="rsvp-endpoint" data-brob="rsvpEndpoint" hidden></span>
+
+          <form id="rsvp-form" class="mt-10 max-w-xl space-y-6" novalidate>
+
+            <!-- E-post -->
+            <div>
+              <label class="block text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70" for="rsvp-email">E-post</label>
+              <input id="rsvp-email" type="email" required placeholder="din@epost.se"
+                class="mt-2 w-full border border-line bg-paper px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />
+            </div>
+
+            <!-- Attending radio -->
+            <fieldset>
+              <legend class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Kommer du/ni?</legend>
+              <div class="mt-2 flex gap-6">
+                <label class="flex items-center gap-2 text-sm text-text">
+                  <input type="radio" name="attending" value="yes" required class="accent-rouge" /> Ja
+                </label>
+                <label class="flex items-center gap-2 text-sm text-text">
+                  <input type="radio" name="attending" value="no" required class="accent-rouge" /> Nej
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Decline section (shown only if No) -->
+            <div id="rsvp-decline-section" hidden>
+              <label class="block text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70" for="rsvp-decline-name">Ditt namn</label>
+              <input id="rsvp-decline-name" type="text" placeholder="Namn"
+                class="mt-2 w-full border border-line bg-paper px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />
+            </div>
+
+            <!-- YES section -->
+            <div id="rsvp-yes-section" hidden class="space-y-6">
+
+              <!-- Guest list -->
+              <div>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Gäster</p>
+                <div id="rsvp-guests" class="mt-3 space-y-4"></div>
+                <button type="button" id="rsvp-add-guest"
+                  class="mt-3 border border-line bg-paper px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-rouge transition hover:border-rouge">
+                  + Lägg till gäst
+                </button>
+              </div>
+
+              <!-- Extra kids stepper -->
+              <div>
+                <label class="block text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Extra barn till dopfika</label>
+                <div class="mt-2 flex items-center gap-3">
+                  <button type="button" id="rsvp-kids-minus"
+                    class="flex h-9 w-9 items-center justify-center border border-line text-lg text-text transition hover:border-rouge">&minus;</button>
+                  <span id="rsvp-kids-count" class="w-6 text-center text-base text-text">0</span>
+                  <button type="button" id="rsvp-kids-plus"
+                    class="flex h-9 w-9 items-center justify-center border border-line text-lg text-text transition hover:border-rouge">+</button>
+                </div>
+              </div>
+
+              <!-- Message -->
+              <div>
+                <label class="block text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70" for="rsvp-message">Meddelande</label>
+                <textarea id="rsvp-message" rows="3" placeholder="Berätta gärna…"
+                  class="mt-2 w-full border border-line bg-paper px-4 py-3 text-base text-text outline-none transition focus:border-rouge"></textarea>
+              </div>
+
+              <!-- Peppade -->
+              <fieldset>
+                <legend class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Peppade?</legend>
+                <div class="mt-2 flex gap-6">
+                  <label class="flex items-center gap-2 text-sm text-text">
+                    <input type="radio" name="peppade" value="yes" class="accent-rouge" /> Ja!
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-text">
+                    <input type="radio" name="peppade" value="no" class="accent-rouge" /> Nej
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" id="rsvp-submit"
+              class="w-full border border-rouge bg-rouge px-4 py-3 text-xs font-semibold uppercase tracking-[0.32em] text-paper transition hover:bg-wine disabled:opacity-50">
+              Skicka OSA
+            </button>
+            <p id="rsvp-status" class="text-sm text-text/70"></p>
+            <p id="rsvp-error" class="text-sm text-rouge"></p>
+          </form>
+
+          <!-- Success messages -->
+          <div id="rsvp-success-yes" hidden class="mt-10 max-w-xl border border-line bg-paper p-6 text-center">
+            <p class="font-accent text-3xl text-rouge">tack!</p>
+            <p class="mt-3 text-sm leading-7 text-text/85">Vi har fått din OSA. Ses i juli!</p>
+          </div>
+          <div id="rsvp-success-no" hidden class="mt-10 max-w-xl border border-line bg-paper p-6 text-center">
+            <p class="font-accent text-3xl text-rouge">tack!</p>
+            <p class="mt-3 text-sm leading-7 text-text/85">Vad synd! Vi ses en annan gång!</p>
+          </div>
+        </section>
+
+        <section id="faq" class="border-t border-line py-10 sm:py-14">
+          <div class="max-w-2xl">
+            <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">FAQ</p>
+            <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">bra att veta</h3>
+          </div>
+          <div class="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+            <div>
+              <h4 class="text-sm font-semibold uppercase tracking-[0.24em] text-text">Vad ska jag ha på mig?</h4>
+              <p class="mt-3 text-sm leading-7 text-text/85">Festfin klädsel passar utmärkt. Mer specifik information kan läggas här senare.</p>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold uppercase tracking-[0.24em] text-text">Får jag ta med en plus-one?</h4>
+              <p class="mt-3 text-sm leading-7 text-text/85">Det framgår på er inbjudan och i den slutliga OSA-lösningen vilka som ingår i sällskapet.</p>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold uppercase tracking-[0.24em] text-text">Är barn bjudna?</h4>
+              <p class="mt-3 text-sm leading-7 text-text/85">Om inget annat står i inbjudan planerar vi för en vuxenhelg.</p>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold uppercase tracking-[0.24em] text-text">När kommer fler detaljer?</h4>
+              <p class="mt-3 text-sm leading-7 text-text/85">Sidan uppdateras löpande när tider, adresser och praktisk information är helt klara.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      // RSVP form logic
+      (function () {
+        var guestIndex = 0;
+        var extraKids = 0;
+
+        // Toggle yes/no sections
+        document.querySelectorAll('input[name="attending"]').forEach(function (radio) {
+          radio.addEventListener('change', function () {
+            var yes = this.value === 'yes';
+            document.getElementById('rsvp-yes-section').hidden = !yes;
+            document.getElementById('rsvp-decline-section').hidden = yes;
+            if (yes && document.querySelectorAll('.rsvp-guest').length === 0) {
+              addGuest();
+            }
+          });
+        });
+
+        // Add guest block
+        function addGuest() {
+          guestIndex++;
+          var n = guestIndex;
+          var container = document.getElementById('rsvp-guests');
+          var div = document.createElement('div');
+          div.className = 'rsvp-guest relative space-y-3 border border-line bg-paper p-4';
+          div.innerHTML =
+            '<button type="button" class="rsvp-remove-guest absolute right-3 top-2 text-lg text-text/50 transition hover:text-rouge">&times;</button>' +
+            '<input type="text" placeholder="Namn" required class="guest-name w-full border border-line bg-white px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />' +
+            '<fieldset>' +
+            '<legend class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Kost</legend>' +
+            '<div class="mt-1 flex gap-4">' +
+            '<label class="flex items-center gap-2 text-sm text-text"><input type="radio" name="diet-' + n + '" value="Allt" checked class="accent-rouge" /> Allt</label>' +
+            '<label class="flex items-center gap-2 text-sm text-text"><input type="radio" name="diet-' + n + '" value="Annat" class="accent-rouge" /> Annat</label>' +
+            '</div>' +
+            '</fieldset>' +
+            '<input type="text" placeholder="Beskriv…" hidden class="guest-diet-detail w-full border border-line bg-white px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />';
+
+          container.appendChild(div);
+
+          div.querySelector('.rsvp-remove-guest').addEventListener('click', function () {
+            div.remove();
+          });
+
+          div.querySelectorAll('input[type="radio"]').forEach(function (r) {
+            r.addEventListener('change', function () {
+              div.querySelector('.guest-diet-detail').hidden = this.value !== 'Annat';
+            });
+          });
+        }
+
+        document.getElementById('rsvp-add-guest').addEventListener('click', addGuest);
+
+        // Kids stepper
+        document.getElementById('rsvp-kids-minus').addEventListener('click', function () {
+          if (extraKids > 0) extraKids--;
+          document.getElementById('rsvp-kids-count').textContent = extraKids;
+        });
+        document.getElementById('rsvp-kids-plus').addEventListener('click', function () {
+          extraKids++;
+          document.getElementById('rsvp-kids-count').textContent = extraKids;
+        });
+
+        // Submit
+        document.getElementById('rsvp-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          var errorEl = document.getElementById('rsvp-error');
+          var statusEl = document.getElementById('rsvp-status');
+          errorEl.textContent = '';
+          statusEl.textContent = '';
+
+          var endpoint = document.getElementById('rsvp-endpoint').textContent.trim();
+          var email = document.getElementById('rsvp-email').value.trim();
+          var attendingRadio = document.querySelector('input[name="attending"]:checked');
+
+          if (!email) { errorEl.textContent = 'Ange din e-post.'; return; }
+          if (!attendingRadio) { errorEl.textContent = 'Ange om du/ni kommer.'; return; }
+
+          var attending = attendingRadio.value === 'yes';
+          var payload = { email: email, attending: attending };
+
+          if (attending) {
+            var guests = [];
+            document.querySelectorAll('.rsvp-guest').forEach(function (g) {
+              var dietRadio = g.querySelector('input[type="radio"]:checked');
+              guests.push({
+                name: g.querySelector('.guest-name').value.trim(),
+                diet: dietRadio ? dietRadio.value : 'Allt',
+                dietDetail: g.querySelector('.guest-diet-detail').value.trim()
+              });
+            });
+            if (guests.length === 0) { errorEl.textContent = 'Lägg till minst en gäst.'; return; }
+            if (guests.some(function (g) { return !g.name; })) { errorEl.textContent = 'Varje gäst behöver ett namn.'; return; }
+            payload.guests = guests;
+            payload.extraKids = extraKids;
+            payload.message = document.getElementById('rsvp-message').value.trim();
+            var peppadeRadio = document.querySelector('input[name="peppade"]:checked');
+            payload.peppade = peppadeRadio ? peppadeRadio.value === 'yes' : null;
+          } else {
+            var declineName = document.getElementById('rsvp-decline-name').value.trim();
+            if (!declineName) { errorEl.textContent = 'Ange ditt namn.'; return; }
+            payload.declineName = declineName;
+          }
+
+          if (!endpoint) { errorEl.textContent = 'Endpoint saknas.'; return; }
+
+          var btn = document.getElementById('rsvp-submit');
+          btn.disabled = true;
+          statusEl.textContent = 'Skickar…';
+
+          fetch(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+          })
+            .then(function (res) {
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              document.getElementById('rsvp-form').hidden = true;
+              document.getElementById(attending ? 'rsvp-success-yes' : 'rsvp-success-no').hidden = false;
+            })
+            .catch(function () {
+              errorEl.textContent = 'Något gick fel. Försök igen.';
+              btn.disabled = false;
+            })
+            .finally(function () {
+              statusEl.textContent = '';
+            });
+        });
+      })();
+    </script>
+
+    <script>
+      // Dev bypass: on localhost, load plaintext data directly, skip encryption
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        document.getElementById('brob-locked')?.remove();
+        document.getElementById('brob-unlocked')?.removeAttribute('hidden');
+        fetch('data/source.json')
+          .then(r => r.json())
+          .then(data => {
+            document.querySelectorAll('[data-brob]').forEach(el => {
+              const key = el.dataset.brob;
+              if (key in data) el.textContent = data[key];
+            });
+          });
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/ocyj/brollobfuscate@main/src/decrypt.js"></script>
+  </body>
+</html>
