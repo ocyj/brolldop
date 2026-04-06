@@ -65,10 +65,10 @@
       class="fixed inset-0 z-50 flex items-center justify-center bg-blush/95 px-5 py-8"
     >
       <div class="w-full max-w-md border border-line bg-paper px-7 py-9 text-center shadow-soft sm:px-10">
-        <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Bröllopshelg</p>
-        <h1 class="mt-5 font-accent text-6xl leading-none text-rouge sm:text-7xl">välkommen</h1>
+        <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Brölldop</p>
+        <h1 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-7xl">välkommen</h1>
         <p class="mx-auto mt-5 max-w-sm text-sm leading-7 text-text/80 sm:text-base">
-          Ange lösenordet för att se schema, resa, OSA och övriga detaljer.
+          Ange lösenordet för att se all info och OSA.
         </p>
 
         <form id="brob-form" class="mt-8 space-y-4 text-left">
@@ -107,11 +107,7 @@
       <div class="mx-auto max-w-5xl px-5 pb-16 pt-8 sm:px-8 sm:pb-24 sm:pt-12">
         <header class="border-b border-line pb-5 sm:pb-7">
           <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p class="text-[11px] font-semibold uppercase tracking-widestish text-rouge" data-brob="weddingDate"></p>
-              <h2 class="mt-4 text-2xl font-semibold uppercase tracking-[0.35em] text-rouge sm:text-3xl" data-brob="coupleNames">
-              </h2>
-            </div>
+
             <nav class="flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-text/80 sm:justify-end">
               <a href="#schedule" class="transition hover:text-rouge">Program</a>
               <a href="#travel" class="transition hover:text-rouge">Resa</a>
@@ -194,16 +190,16 @@
             <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Resa & boende</p>
             <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">det praktiska</h3>
             <div class="mt-8 space-y-5 text-sm leading-8 text-text/85 sm:text-base">
-              <p><span class="font-semibold text-text">Boende:</span> För er som inte bor i <span data-brob="city"></span> tipsar vi om två olika boenden i <span data-brob="vicinityArea"></span>, ca <span data-brob="vicintyDistance"></span> från vårt hus. Länkar hittar ni till höger. Det går att åka kollektivt härifrån både till <span data-brob="ceremonyVenue"></span> och hem till oss.</p>
-              <p><span class="font-semibold text-text">Transport:</span> Till <span data-brob="ceremonyVenue"></span> tar ni <span data-brob="bussTrams"></span> och hoppar av på hållplats <span data-brob="bussStop"></span>.</p>
+              <p><span class="font-semibold text-text">Boende:</span> <span data-brob="accomodationP1"></span> Länkar hittar ni <span class="sm:hidden">nedan</span><span class="hidden sm:inline">till höger</span> <span data-brob="accomodationP2"></span> </p>
+              <p class="font-semibold italic text-text" data-brob="accomodationNote"></p>
+              <p><span class="font-semibold text-text">Transport:</span><span data-brob="transportInstructions"></span>.</p>
             </div>
           </div>
           <div class="border border-line bg-paper p-6 sm:p-8">
             <p class="text-xs font-semibold uppercase tracking-[0.28em] text-rouge">Länkar</p>
             <div class="mt-5 space-y-5 text-sm leading-7 text-text/85">
-              <p><span class="font-semibold text-text">Närmaste stad:</span> <span data-brob="city"></span></p>
-              <p><span class="font-semibold text-text">Klädsel:</span> Festfin</p>
-              <p><span class="font-semibold text-text">Mer info:</span> Läggs upp här när detaljerna är spikade</p>
+              <p><a class="font-semibold text-text underline hover:text-rouge" target="_blank" rel="noopener noreferrer" data-brob="hotelName" data-brob-href="hotelUrl"></a></p>
+              <p><a class="font-semibold text-text underline hover:text-rouge" target="_blank" rel="noopener noreferrer" data-brob="hostelName" data-brob-href="hostelUrl"></a></p>
             </div>
           </div>
         </section>
@@ -480,9 +476,11 @@
         fetch('data/source.json')
           .then(r => r.json())
           .then(data => {
-            document.querySelectorAll('[data-brob]').forEach(el => {
+            document.querySelectorAll('[data-brob], [data-brob-href]').forEach(el => {
               const key = el.dataset.brob;
-              if (key in data) el.textContent = data[key];
+              if (key && key in data) el.textContent = data[key];
+              const hrefKey = el.dataset.brobHref;
+              if (hrefKey && hrefKey in data) el.setAttribute('href', data[hrefKey]);
             });
           });
       }
