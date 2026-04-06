@@ -134,20 +134,25 @@
 
         <section class="grid gap-10 border-t border-line py-10 sm:grid-cols-2 sm:py-14">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Om helgen</p>
-            <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">ni är inbjudna</h3>
+            <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Om dagen</p>
+            <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">kära vänner</h3>
             <p class="mt-6 max-w-md text-base leading-8 text-text/85">
-              Vi vill samla våra favoritmänniskor för en varm, enkel och festlig helg. Här samlar vi tider,
-              praktisk information och OSA på ett ställe.
+              Vi vill hälsa er alla varmt välkomna till vårt bröllop och <span data-brob="childName"></span>s dop! Vi ser fram emot att få dela den här dagen med er OCH att få bjuda in till vårt nya hem. Dopet och vigseln följs nämligen av trädgårdsfest i <span data-brob="cityArea"></span>!
             </p>
+            <p class="mt-6 max-w-md text-base leading-8 text-text/85">
+             Barn är varmt välkomna till kyrkan med efterföljande dopfika. Vi skulle bli så glada om de förgyllde den stunden. Tyvärr hade vi inte råd med en större trädgård, så festen blir endast för oss vuxna :) Läs mer om upplägget av dagen nedan.
+            </p>
+
+            <p class="mt-6 max-w-md text-base leading-8 text-text/85">Nu kör vi!<br><span data-brob="coupleNames"></span></p>
+
           </div>
           <div class="grid gap-6 text-sm leading-7 text-text/85 sm:pt-10">
             <div>
               <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-rouge">Plats</p>
-              <p class="mt-2 text-base" data-brob="cityArea"></p>
+              <p class="mt-2 text-base" data-brob="city"></p>
             </div>
             <div>
-              <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-rouge">Vigsel</p>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-rouge">Dop och vigsel</p>
               <p class="mt-2 text-base" data-brob="ceremonyBrief"></p>
             </div>
             <div>
@@ -189,13 +194,12 @@
             <p class="text-xs font-semibold uppercase tracking-widestish text-rouge">Resa & boende</p>
             <h3 class="mt-5 font-accent text-5xl leading-none text-rouge sm:text-6xl">det praktiska</h3>
             <div class="mt-8 space-y-5 text-sm leading-8 text-text/85 sm:text-base">
-              <p><span class="font-semibold text-text">Boende:</span> Vi delar hotellförslag och rekommendationer här så snart allt är bokat.</p>
-              <p><span class="font-semibold text-text">Transport:</span> Här kommer information om parkering, kollektivtrafik och eventuell gemensam transport.</p>
-              <p><span class="font-semibold text-text">Adress:</span> Exakt adress och tider ligger bakom lösenordet och uppdateras löpande.</p>
+              <p><span class="font-semibold text-text">Boende:</span> För er som inte bor i <span data-brob="city"></span> tipsar vi om två olika boenden i <span data-brob="vicinityArea"></span>, ca <span data-brob="vicintyDistance"></span> från vårt hus. Länkar hittar ni till höger. Det går att åka kollektivt härifrån både till <span data-brob="ceremonyVenue"></span> och hem till oss.</p>
+              <p><span class="font-semibold text-text">Transport:</span> Till <span data-brob="ceremonyVenue"></span> tar ni <span data-brob="bussTrams"></span> och hoppar av på hållplats <span data-brob="bussStop"></span>.</p>
             </div>
           </div>
           <div class="border border-line bg-paper p-6 sm:p-8">
-            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-rouge">Kort info</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.28em] text-rouge">Länkar</p>
             <div class="mt-5 space-y-5 text-sm leading-7 text-text/85">
               <p><span class="font-semibold text-text">Närmaste stad:</span> <span data-brob="city"></span></p>
               <p><span class="font-semibold text-text">Klädsel:</span> Festfin</p>
