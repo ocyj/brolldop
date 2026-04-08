@@ -192,7 +192,8 @@
             <div class="mt-8 space-y-5 text-sm leading-8 text-text/85 sm:text-base">
               <p><span class="font-semibold text-text">Boende:</span> <span data-brob="accomodationP1"></span> Länkar hittar ni <span class="sm:hidden">nedan</span><span class="hidden sm:inline">till höger</span>. <span data-brob="accomodationP2"></span> </p>
               <p class="font-semibold italic text-text" data-brob="accomodationNote"></p>
-              <p><span class="font-semibold text-text">Transport:</span><span data-brob="transportInstructions"></span>.</p>
+              <p><span class="font-semibold text-text">Transport till kyrkan:</span><span data-brob="transportInstructionsChurch"></span></p>
+              <p><span class="font-semibold text-text">Transport till festen:</span><span data-brob="transportInstructionsParty"></span></p>
             </div>
           </div>
           <div class="self-start border border-line bg-paper p-6 sm:mt-[8rem] sm:p-8">
@@ -457,6 +458,7 @@
               if (!res.ok) throw new Error('HTTP ' + res.status);
               document.getElementById('rsvp-form').hidden = true;
               document.getElementById(anyAttending ? 'rsvp-success-yes' : 'rsvp-success-no').hidden = false;
+              document.getElementById('rsvp').scrollIntoView({ behavior: 'smooth' });
             })
             .catch(function () {
               errorEl.textContent = 'Något gick fel. Försök igen.';
