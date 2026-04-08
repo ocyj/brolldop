@@ -198,9 +198,9 @@
           <div class="border border-line bg-paper p-6 sm:p-8">
             <p class="text-xs font-semibold uppercase tracking-[0.28em] text-rouge">Länkar</p>
             <div class="mt-5 space-y-5 text-sm leading-7 text-text/85">
-              <p><a href="#" class="font-semibold text-text underline hover:text-rouge" target="_blank" rel="noopener noreferrer" data-brob="hotelName" data-brob-href="hotelUrl"></a></p>
-              <p><a href="#" class="font-semibold text-text underline hover:text-rouge" target="_blank" rel="noopener noreferrer" data-brob="hostelName" data-brob-href="hostelUrl"></a></p>
-              <p><a href="#" class="font-semibold text-text underline hover:text-rouge" target="_blank" rel="noopener noreferrer" data-brob="transitName" data-brob-href="transitUrl"></a></p>
+              <p><a href="#" class="font-semibold text-text underline hover:text-rouge" target="_blank" rel="noopener noreferrer" data-brob="hotelName" data-brob-href="hotelUrl"></a><span data-brob="hotelUrl" hidden></span></p>
+              <p><a href="#" class="font-semibold text-text underline hover:text-rouge" target="_blank" rel="noopener noreferrer" data-brob="hostelName" data-brob-href="hostelUrl"></a><span data-brob="hostelUrl" hidden></span></p>
+              <p><a href="#" class="font-semibold text-text underline hover:text-rouge" target="_blank" rel="noopener noreferrer" data-brob="transitName" data-brob-href="transitUrl"></a><span data-brob="transitUrl" hidden></span></p>
             </div>
           </div>
         </section>
@@ -494,5 +494,20 @@
         .catch(() => {}); // fail silently on localhost where envelope isn't needed
     </script>
     <script src="https://cdn.jsdelivr.net/gh/ocyj/brollobfuscate@main/src/decrypt.js"></script>
+    <script>
+      // Workaround: Firefox/Safari don't reliably update <a> href via
+      // data-brob-href + setAttribute. Each link has a sibling hidden <span>
+      // whose textContent is set to the URL by decrypt.js (textContent always
+      // works). On click, copy the URL to the link's href before the browser
+      // navigates.
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest('a[data-brob-href]');
+        if (!a) return;
+        var span = a.parentElement.querySelector('span[hidden][data-brob]');
+        if (span && span.textContent && /^https?:/.test(span.textContent)) {
+          a.href = span.textContent;
+        }
+      });
+    </script>
   </body>
 </html>
