@@ -341,7 +341,7 @@
             '<button type="button" class="rsvp-remove-guest absolute right-3 top-2 text-lg text-text/50 transition hover:text-rouge">&times;</button>' +
             '<input type="text" placeholder="Namn" required class="guest-name w-full border border-line bg-white px-4 py-3 text-base text-text outline-none transition focus:border-rouge" />' +
             '<fieldset>' +
-            '<legend class="text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Gäst kommer</legend>' +
+            '<legend class="guest-attending-legend text-[11px] font-semibold uppercase tracking-[0.28em] text-text/70">Gäst kommer</legend>' +
             '<div class="mt-1 flex gap-4">' +
             '<label class="flex items-center gap-2 text-sm text-text"><input type="radio" name="attending-' + n + '" value="yes" class="guest-attending-yes accent-rouge" /> Ja</label>' +
             '<label class="flex items-center gap-2 text-sm text-text"><input type="radio" name="attending-' + n + '" value="no" class="guest-attending-no accent-rouge" /> Nej</label>' +
@@ -359,6 +359,12 @@
             '</div>';
 
           container.appendChild(div);
+
+          div.querySelector('.guest-name').addEventListener('input', function () {
+            var legend = div.querySelector('.guest-attending-legend');
+            var name = this.value.trim();
+            legend.textContent = name ? name + ' kommer' : 'Gäst kommer';
+          });
 
           div.querySelector('.rsvp-remove-guest').addEventListener('click', function () {
             div.remove();
